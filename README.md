@@ -1,6 +1,6 @@
-# BrainRusted: Brainfuck Interpreter in Rust
+# BrainRusted: Brainf*ck Interpreter in Rust
 
-This is a simple interpreter for the Brainfuck programming language, implemented in Rust. The project was created around 2020/2021 as a learning endeavor to practice Rust programming and to gain a better understanding of how interpreters work. While it is unlikely to receive updates in the future, it is not impossible.
+This is a simple interpreter for the Brainf*ck programming language, implemented in Rust. The project was created around 2020/2021 as a learning endeavor to practice Rust programming and to gain a better understanding of how interpreters work. While it is unlikely to receive updates in the future, it is not impossible.
 
 ## Table of Contents
 
@@ -13,9 +13,9 @@ This is a simple interpreter for the Brainfuck programming language, implemented
 
 ## Features
 
-- Parses Brainfuck code from a file.
-- Executes Brainfuck instructions.
-- Supports all standard Brainfuck commands: `>`, `<`, `+`, `-`, `.`, `,`, `[`, `]`.
+- Parses Brainf*ck code from a file.
+- Executes Brainf*ck instructions.
+- Supports all standard Brainf*ck commands: `>`, `<`, `+`, `-`, `.`, `,`, `[`, `]`.
 
 ## Installation
 
@@ -29,15 +29,15 @@ cargo build --release
 
 ## Usage
 
-After building the project, you can run the interpreter by passing the path to a Brainfuck program as an argument:
+After building the project, you can run the interpreter by passing the path to a Brainf*ck program as an argument:
 
 ```bash
-cargo run path/to/your/brainfuck_program.bf
+cargo run path/to/your/brainf_ck_program.bf
 ```
 
 ## Example
 
-Here is a simple Brainfuck program that prints "Hello, World!" when executed:
+Here is a simple Brainf*ck program that prints "Hello, World!" when executed:
 
 ```brainfuck
 >++++++++[<+++++++++>-]<.
