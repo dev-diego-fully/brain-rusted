@@ -4,48 +4,32 @@ mod virtual_machine;
 use std::env;
 use std::fs::File;
 use std::io::BufReader;
-use std::io::Read;
 use std::io::ErrorKind;
+use std::io::Read;
 
+use lexer_parser::{Instruction, Token};
 use virtual_machine::VirtualMachine;
-use lexer_parser::{
-    Token,
-    Instruction
-};
-
 
 fn main() -> std::io::Result<()> {
-
     let args: Vec<String> = env::args().collect();
     let path: &String;
 
     if args.len() > 1 {
+        path = &args[1];
 
-        path = &args[ 1 ];
-
-        let file = File::open( path )?;
-        let mut buf_reader: BufReader<File> = BufReader::new( file );
+        let file = File::open(path)?;
+        let mut buf_reader: BufReader<File> = BufReader::new(file);
         let mut contents: String = String::new();
 
-        buf_reader.read_to_string( &mut contents )?;
+        buf_reader.read_to_string(&mut contents)?;
+        let program = &Instruction::from(&Token::parse(contents));
 
-        let mut vm = VirtualMachine::new();
-        vm.exec_program(
-            Instruction::from(
-                &Token::parse(
-                    contents
-                )
-            )
-        );
+        VirtualMachine::executing(program);
 
-        return Ok( () );
-
+        Ok(())
     } else {
+        println!("Error: No path passed.\n");
 
-        println!( "Error: No path passed.\n" );
-
-        return Err( std::io::Error::from( ErrorKind::InvalidInput ) );
-
+        Err(std::io::Error::from(ErrorKind::InvalidInput))
     }
-
 }
