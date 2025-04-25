@@ -1,4 +1,5 @@
-mod lexer_parser;
+mod lexer;
+mod parser;
 mod virtual_machine;
 
 use std::env;
@@ -7,7 +8,8 @@ use std::io::BufReader;
 use std::io::ErrorKind;
 use std::io::Read;
 
-use lexer_parser::{Instruction, Token};
+use lexer::Token;
+use parser::Instruction;
 use virtual_machine::VirtualMachine;
 
 fn main() -> std::io::Result<()> {
