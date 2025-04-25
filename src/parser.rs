@@ -1,4 +1,12 @@
-use crate::Token;
+use crate::lexer::Token;
+
+pub(crate) struct Parser {}
+
+impl Parser {
+    pub(crate) fn parse(instructions: &[Token]) -> Result<Vec<Instruction>, String> {
+        Ok(Instruction::from(instructions))
+    }
+}
 
 #[derive(Debug)]
 pub enum Instruction {
@@ -12,13 +20,13 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub fn from(program: &Vec<Token>) -> Vec<Instruction> {
+    pub fn from(program: &[Token]) -> Vec<Instruction> {
         let (program, _len) = Self::priv_from(program, 0, 0);
 
         program
     }
 
-    fn priv_from(program: &Vec<Token>, i: usize, loop_level: u8) -> (Vec<Instruction>, usize) {
+    fn priv_from(program: &[Token], i: usize, loop_level: u8) -> (Vec<Instruction>, usize) {
         let mut parsed: Vec<Instruction> = Vec::new();
         let mut j: usize = i;
         let mut len: usize = 0;

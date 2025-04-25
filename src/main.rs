@@ -1,37 +1,21 @@
 mod lexer;
+mod load;
 mod parser;
 mod virtual_machine;
 
-use std::env;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::ErrorKind;
-use std::io::Read;
-
-use lexer::Token;
-use parser::Instruction;
+use lexer::Lexer;
+use parser::Parser;
 use virtual_machine::VirtualMachine;
 
-fn main() -> std::io::Result<()> {
-    let args: Vec<String> = env::args().collect();
-    let path: &String;
-
-    if args.len() > 1 {
-        path = &args[1];
-
-        let file = File::open(path)?;
-        let mut buf_reader: BufReader<File> = BufReader::new(file);
-        let mut contents: String = String::new();
-
-        buf_reader.read_to_string(&mut contents)?;
-        let program = &Instruction::from(&Token::parse(contents));
-
-        VirtualMachine::executing(program);
-
-        Ok(())
-    } else {
-        println!("Error: No path passed.\n");
-
-        Err(std::io::Error::from(ErrorKind::InvalidInput))
-    }
+fn main() {
+    let _ = load::load_program_file()
+        .and_then(|content| Lexer::tokenize(&content))
+        .and_then(|tokens| Parser::parse(&tokens))
+        .map(|instructions| {
+            VirtualMachine::executing(&instructions);
+        })
+        .or_else(|msg| {
+            println!("{}", msg);
+            Ok::<(), String>(())
+        });
 }

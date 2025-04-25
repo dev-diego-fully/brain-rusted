@@ -1,4 +1,4 @@
-use crate::Instruction;
+use crate::parser::Instruction;
 use std::io::Read;
 
 /// Implements the virtual machine's public API.
