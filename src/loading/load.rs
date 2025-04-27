@@ -26,7 +26,7 @@ fn get_program_path() -> Result<String, String> {
 /// message is returned explaining that a file could not be found at the
 /// given path. This message is suitable for display by the program.
 fn open_file(path: &String) -> Result<std::fs::File, String> {
-    std::fs::File::open(path).map_err(|_| error_file_not_found(path))
+    std::fs::File::open(path).map_err(|_| super::error_file_not_found(path))
 }
 
 /// Attempts to return, as a string, the entire contents of the given file.
@@ -39,19 +39,6 @@ fn get_file_content(file: &std::fs::File) -> Result<String, String> {
 
     match buff_reader.read_to_string(&mut content) {
         Ok(_) => Ok(content),
-        Err(_) => Err(error_reading_file()),
+        Err(_) => Err(super::error_reading_file()),
     }
-}
-
-/// Returns an error message when a file cannot be found with the specified
-/// path.
-fn error_file_not_found(path: &String) -> String {
-    format!("File not found: {}", path)
-}
-
-/// Returns an error message when it was not possible to load the
-/// contents of the file in the program argument path, for a reason
-/// other than finding it.
-fn error_reading_file() -> String {
-    "Failed to read file content".to_string()
 }

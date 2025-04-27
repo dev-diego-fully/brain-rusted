@@ -1,5 +1,6 @@
-use crate::parser::Instruction;
 use std::io::Read;
+
+use crate::parsing::Instruction;
 
 /// Implements the virtual machine's public API.
 impl VirtualMachine {
@@ -9,7 +10,7 @@ impl VirtualMachine {
     pub(crate) fn new() -> Self {
         Self {
             current_memory_slot: 0,
-            memory_slots: vec![0; Self::MEMORY_SLOTS_COUNT],
+            memory_slots: vec![Self::MEMSLOTS_INITIAL_VALUE; Self::MEMSLOTS_COUNT],
         }
     }
 
@@ -117,7 +118,11 @@ impl VirtualMachine {
 /// the user.
 impl VirtualMachine {
     /// Number of default memory slots for this virtual machine.
-    const MEMORY_SLOTS_COUNT: usize = 256;
+    const MEMSLOTS_COUNT: usize = 256;
+
+    /// Default value written to a memory slot when the virtual machine
+    /// is created.
+    const MEMSLOTS_INITIAL_VALUE: u8 = 0;
 
     /// Returns the value recorded in the current memory slot.
     fn current_memslot_value(&self) -> u8 {
