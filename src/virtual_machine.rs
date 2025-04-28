@@ -9,7 +9,7 @@ impl VirtualMachine {
     /// registered value.
     pub(crate) fn new() -> Self {
         Self {
-            current_memory_slot: 0,
+            current_memslot: 0,
             memory_slots: vec![Self::MEMSLOTS_INITIAL_VALUE; Self::MEMSLOTS_COUNT],
         }
     }
@@ -39,7 +39,7 @@ pub(crate) struct VirtualMachine {
     /// Index of the memory slot that is currently in use.
     /// This means that this is the slot where a value will be read or
     /// written if an instruction requests it.
-    current_memory_slot: u8,
+    current_memslot: u8,
 }
 
 /// Implements commands for the virtual machine. A command is anything that
@@ -54,7 +54,7 @@ impl VirtualMachine {
             Instruction::Recede => self.move_to_previous_slot(),
             Instruction::Increment => self.increment_slot_value(),
             Instruction::Decrement => self.decrement_slot_value(),
-            Instruction::Show => self.display_from_current_memory_slot(),
+            Instruction::Show => self.display_from_current_memslot(),
             Instruction::Read => self.read_from_user(),
             Instruction::Loop(instructions) => self.execute_loop(instructions),
         }
@@ -71,32 +71,34 @@ impl VirtualMachine {
 
     /// Displays the value stored in the current memory slot as an ascii
     /// character on the terminal.
-    fn display_from_current_memory_slot(&self) {
-        print!("{}", char::from(self.current_memslot_value()));
+    fn display_from_current_memslot(&self) {
+        print!("{}", char::from(self.get_current_memslot_value()));
     }
 
     /// Increments the value registered in the current memory slot. Does not
     /// prevent overflows.
     fn increment_slot_value(&mut self) {
-        self.memory_slots[self.current_memory_slot as usize] += 1;
+        let new_value = self.get_current_memslot_value().wrapping_add(1);
+        self.set_current_memslot_value(new_value);
     }
 
     /// Decrements the value stored in the current memory slot. Does not
     /// prevent underflow.
     fn decrement_slot_value(&mut self) {
-        self.memory_slots[self.current_memory_slot as usize] -= 1;
+        let new_value = self.get_current_memslot_value().wrapping_sub(1);
+        self.set_current_memslot_value(new_value);
     }
 
     /// Advances to the next memory slot. Returns to the first slot if in
     /// the last memory slot.
     fn move_to_next_slot(&mut self) {
-        self.current_memory_slot += 1;
+        self.current_memslot = self.current_memslot.wrapping_add(1);
     }
 
     /// Moves to the previous memory slot. Moves to the last slot if it
     /// is in the first slot.
     fn move_to_previous_slot(&mut self) {
-        self.current_memory_slot -= 1;
+        self.current_memslot = self.current_memslot.wrapping_sub(1);
     }
 
     /// Reads a character from the user and writes the value to the current
@@ -108,8 +110,7 @@ impl VirtualMachine {
             .and_then(|result| result.ok());
 
         let input: u8 = input.unwrap_or_default();
-
-        self.memory_slots[self.current_memory_slot as usize] = input;
+        self.set_current_memslot_value(input);
     }
 }
 
@@ -124,14 +125,28 @@ impl VirtualMachine {
     /// is created.
     const MEMSLOTS_INITIAL_VALUE: u8 = 0;
 
+    /// Value treated as false in BF. Everything else is treated as true.
+    const BRAINFCK_FALSE_VALUE: u8 = 0;
+
     /// Returns the value recorded in the current memory slot.
-    fn current_memslot_value(&self) -> u8 {
-        self.memory_slots[self.current_memory_slot as usize]
+    fn get_current_memslot_value(&self) -> u8 {
+        self.memory_slots[self.get_current_memslot_index()]
+    }
+
+    /// Returns the index (as a usize) of the memslot currently in use.
+    fn get_current_memslot_index(&self) -> usize {
+        self.current_memslot as usize
+    }
+
+    /// Changes the current memslot value to the given value.
+    fn set_current_memslot_value(&mut self, new_value: u8) {
+        let index = self.get_current_memslot_index();
+        self.memory_slots[index] = new_value;
     }
 
     /// Returns whether or not the value recorded in the current memory
     /// slot is different from 0.
     fn check_current_memslot(&self) -> bool {
-        self.current_memslot_value() != 0
+        self.get_current_memslot_value() != Self::BRAINFCK_FALSE_VALUE
     }
 }
