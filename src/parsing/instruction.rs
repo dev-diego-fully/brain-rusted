@@ -57,6 +57,7 @@ impl Instruction {
 }
 
 impl Instruction {
+    /// Returns the representation (as a String) of this instruction.
     fn representation(&self) -> String {
         match self {
             Instruction::Advance => String::from(">"),
@@ -69,6 +70,8 @@ impl Instruction {
         }
     }
 
+    /// Returns a representation of a loop with the given instructions
+    /// in its body.
     fn represents_loop(instructions: &[Self]) -> String {
         let ops_representation: Vec<String> =
             instructions.iter().map(|i| i.representation()).collect();
