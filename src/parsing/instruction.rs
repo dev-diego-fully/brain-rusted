@@ -45,6 +45,9 @@ impl Instruction {
             .collect()
     }
 
+    /// Returns the representation of a loop that was not properly closed
+    /// (left open). Receives only the loop instructions and not a
+    /// loop itself.
     pub(crate) fn represents_unclosed(instructions: &[Self]) -> String {
         Self::represents_loop(instructions)
             .chars()

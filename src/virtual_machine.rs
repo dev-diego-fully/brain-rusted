@@ -75,15 +75,15 @@ impl VirtualMachine {
         print!("{}", char::from(self.get_current_memslot_value()));
     }
 
-    /// Increments the value registered in the current memory slot. Does not
-    /// prevent overflows.
+    /// Increments the value registered in the memory slot currently in use.
+    /// In case of overflow, the value wraps
     fn increment_slot_value(&mut self) {
         let new_value = self.get_current_memslot_value().wrapping_add(1);
         self.set_current_memslot_value(new_value);
     }
 
-    /// Decrements the value stored in the current memory slot. Does not
-    /// prevent underflow.
+    /// Decrements the value registered in the memory slot currently in use.
+    /// In case of underflow, the value wraps
     fn decrement_slot_value(&mut self) {
         let new_value = self.get_current_memslot_value().wrapping_sub(1);
         self.set_current_memslot_value(new_value);
@@ -144,8 +144,8 @@ impl VirtualMachine {
         self.memory_slots[index] = new_value;
     }
 
-    /// Returns whether or not the value recorded in the current memory
-    /// slot is different from 0.
+    /// Returns whether or not the value written to the current memory slot
+    /// is a value treated as true by the language (any value except 0).
     fn check_current_memslot(&self) -> bool {
         self.get_current_memslot_value() != Self::BRAINFCK_FALSE_VALUE
     }
